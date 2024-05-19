@@ -17,5 +17,7 @@ namespace _24h_Code_Challenge.Data
         public virtual DbSet<Pizza> Pizzas { get; set; }
 
         public virtual DbSet<PizzaType> PizzaTypes { get; set; }
+
+        public virtual DbSet<Sales> Sales { get; set; }
     }
 }

@@ -13,7 +13,7 @@ builder.Services.AddSwaggerGen();
 // Registered AppDBContext and specified SQL Server as database provider.
 builder.Services.AddDbContextPool<DataContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("PizzeriaDBConnection"));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
 });
 
 
