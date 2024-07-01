@@ -1,4 +1,5 @@
 using _24h_Code_Challenge.Data;
+using _24h_Code_Challenge.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +17,7 @@ builder.Services.AddDbContextPool<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
 });
 
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
 
 var app = builder.Build();
 

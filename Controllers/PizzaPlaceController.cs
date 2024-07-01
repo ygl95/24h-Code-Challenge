@@ -1,10 +1,10 @@
 ﻿using _24h_Code_Challenge.Data;
 using _24h_Code_Challenge.Entities;
 using _24h_Code_Challenge.Model;
-using Microsoft.AspNetCore.Http;
+using _24h_Code_Challenge.Repository;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using System.Transactions;
 
 namespace _24h_Code_Challenge.Controllers
 {
@@ -13,11 +13,13 @@ namespace _24h_Code_Challenge.Controllers
     public class PizzaPlaceController : ControllerBase
     {
         private readonly DataContext _dataContext;
+        private readonly IProductRepository _productRepository;
 
-        // Inject DbContext we careated for the pizza sales info
-        public PizzaPlaceController(DataContext dataContext)
+        // Inject DbContext we created for the pizza sales info
+        public PizzaPlaceController(DataContext dataContext, IProductRepository productRepository)
         {
             _dataContext = dataContext;
+            _productRepository = productRepository;
         }
 
 
@@ -95,14 +97,27 @@ namespace _24h_Code_Challenge.Controllers
         [HttpGet]
         [Route("bestselling")]
         public async Task<ActionResult> BestSelling()
-        {            
+        {
             var res = await _dataContext.Sales.GroupBy(t => t.PizzaTypeId).Select(x => new
             {
                 PizzaType = x.Key,
                 TotalSales = x.Sum(y => y.Price)
             }).OrderByDescending(o => o.TotalSales).ToListAsync();
-           
+
             return Ok(res);
+        }
+
+        [HttpPost]
+        [Route("insertproduct")]
+        public IActionResult Post([FromBody]PizzaType pizza)
+        {
+            using (var scope = new TransactionScope())
+            {
+                _productRepository.InsertProduct(pizza);
+                scope.Complete();
+                //return CreatedAtAction(nameof(Get), new { id = product.Id }, product);
+                return new OkObjectResult(pizza);
+            }
         }
     }
 }

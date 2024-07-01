@@ -15,5 +15,6 @@ public partial class PizzaType
     public string Category { get; set; } = null!;
 
     public string Ingredients { get; set; } = null!;
+    [JsonIgnore]
     public virtual ICollection<Pizza> Pizzas { get; set; } = new List<Pizza>();
 }
